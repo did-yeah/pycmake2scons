@@ -1,0 +1,29 @@
+from pathlib import Path
+
+Import('env')
+v_dir = Dir('#/{}'.format(env['VARIANT_DIR']))
+env.AppendUnique(CPPPATH=[v_dir, ])
+
+subdirs = [
+{{datas.c_cxx_dir_name}}
+]
+
+include_only_dirs = [
+{{datas.hxx_only_dir_name}}
+]
+
+for sub_src in subdirs + include_only_dirs:
+    src_dir_v = str(Path(f'{sub_src}').resolve())
+    env.AppendUnique(CPPPATH=[src_dir_v])
+
+objs = SConscript(dirs = subdirs, env = 'env')
+
+{% for mname in datas.main_pathes %}
+P = Program('{{ mname }}', objs)
+Return('P', stop=False)
+{% endfor %}
+
+{% for name, path in datas.lib_pathes %}
+L = Library('{{ name }}', [{{ path }}])
+Return('L', stop=False)
+{% endfor %}

@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+markers = [
+    "src_test_dir: mark creating temporary dir",
+]
+[tool.isort]
+profile = "black"
